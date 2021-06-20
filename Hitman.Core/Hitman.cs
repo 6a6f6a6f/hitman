@@ -45,7 +45,7 @@ namespace Hitman.Core
                     {"Accept", "application/json"},
                 }
             };
-            
+
             _semaphoreSlim = new SemaphoreSlim(Environment.ProcessorCount);
 
             _cookieContainer
@@ -70,7 +70,12 @@ namespace Hitman.Core
             return response.IsSuccessStatusCode;
         }
 
-        public async Task<NetworkInformation> GetNetworkInformationFromHandle(string handle)
+        /// <summary>
+        /// Get <see cref="NetworkInformation"/> from given handle.
+        /// </summary>
+        /// <param name="handle">LinkedIn user handle.</param>
+        /// <returns><see cref="NetworkInformation"/> with details about user's network.</returns>
+        public async Task<NetworkInformation> GetNetworkInformationFromHandleAsync(string handle)
         {
             var requestMessage = new HttpRequestMessage(HttpMethod.Get,
                 $"https://www.linkedin.com/voyager/api/identity/profiles/{handle}/networkinfo");
@@ -80,7 +85,23 @@ namespace Hitman.Core
 
             return content;
         }
-        
+
+        /// <summary>
+        /// Get <see cref="PrivacySettings"/> from given handle.
+        /// </summary>
+        /// <param name="handle">LinkedIn user handle.</param>
+        /// <returns><see cref="PrivacySettings"/> with details about user's privacy.</returns>
+        public async Task<PrivacySettings> GetPrivacySettingsFromHandleAsync(string handle)
+        {
+            var requestMessage = new HttpRequestMessage(HttpMethod.Get,
+                $"https://www.linkedin.com/voyager/api/identity/profiles/{handle}/privacySettings");
+
+            var response = await _httpClient.SendAsync(requestMessage);
+            var content = await response.Content.ReadFromJsonAsync<PrivacySettings>();
+
+            return content;
+        }
+
         public void Dispose()
         {
             _httpClient?.Dispose();
