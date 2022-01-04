@@ -10,7 +10,6 @@ namespace Hitman.Core.Tests
     [TestClass]
     public class HitmanTests
     {
-        private readonly IConfiguration _configuration;
         private readonly Session _session;
         
         public HitmanTests()
@@ -18,10 +17,10 @@ namespace Hitman.Core.Tests
             var builder = new ConfigurationBuilder()
                 .AddUserSecrets<HitmanTests>();
                 
-            _configuration = builder.Build();
+            IConfiguration configuration = builder.Build();
 
-            _session = new Session(_configuration["Handle"], _configuration["Jsessionid"],
-                _configuration["LiAt"]);
+            _session = new Session(configuration["Handle"], configuration["Jsessionid"],
+                configuration["LiAt"]);
         }
         
         [TestMethod]

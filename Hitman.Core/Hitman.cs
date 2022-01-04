@@ -41,7 +41,7 @@ namespace Hitman.Core
                 DefaultRequestHeaders =
                 {
                     {"User-Agent", Constants.DefaultUserAgent},
-                    {"CSRF-Token", session.Jsessionid},
+                    {"CSRF-Token", session.Jsessionid.Replace("\"", string.Empty)},
                     {"Accept", "application/json"},
                 }
             };
