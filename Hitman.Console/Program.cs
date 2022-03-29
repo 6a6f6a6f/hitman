@@ -1,10 +1,3 @@
-﻿namespace Hitman.Console
-{
-    internal static class Program
-    {
-        private static void Main(string[] args)
-        {
-            
-        }
-    }
-}
+﻿using System;
+
+Console.WriteLine();

@@ -5,61 +5,60 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 using Hitman.Core.Records;
 
-namespace Hitman.Core.Tests
+namespace Hitman.Core.Tests;
+
+[TestClass]
+public class HitmanTests
 {
-    [TestClass]
-    public class HitmanTests
+    private readonly Session _session;
+        
+    public HitmanTests()
     {
-        private readonly Session _session;
-        
-        public HitmanTests()
-        {
-            var builder = new ConfigurationBuilder()
-                .AddUserSecrets<HitmanTests>();
+        var builder = new ConfigurationBuilder()
+            .AddUserSecrets<HitmanTests>();
                 
-            IConfiguration configuration = builder.Build();
+        IConfiguration configuration = builder.Build();
 
-            _session = new Session(configuration["Handle"], configuration["Jsessionid"],
-                configuration["LiAt"]);
-        }
+        _session = new Session(configuration["Handle"], configuration["Jsessionid"],
+            configuration["LiAt"]);
+    }
         
-        [TestMethod]
-        public async Task TestSession()
-        {
-            using var hitman = new Hitman(_session);
-            var sessionState = await hitman.IsSessionValidAsync();
+    [TestMethod]
+    public async Task TestSession()
+    {
+        using var hitman = new Hitman(_session);
+        var sessionState = await hitman.IsSessionValidAsync();
 
-            Assert.IsTrue(sessionState);
-        }
+        Assert.IsTrue(sessionState);
+    }
 
-        [TestMethod]
-        public async Task TestGetNetworkInformation()
-        {
-            const string trackingUrn = "urn:li:member:251749025";
+    [TestMethod]
+    public async Task TestGetNetworkInformation()
+    {
+        const string trackingUrn = "urn:li:member:251749025";
 
-            using var hitman = new Hitman(_session);
-            var willianGates = await hitman.GetNetworkInformationFromHandleAsync("williamhgates");
+        using var hitman = new Hitman(_session);
+        var willianGates = await hitman.GetNetworkInformationFromHandleAsync("williamhgates");
 
-            Assert.IsTrue(
-                willianGates.Followable &&
-                willianGates.FollowingInfo.TrackingUrn == trackingUrn
-            );
-        }
+        Assert.IsTrue(
+            willianGates.Followable &&
+            willianGates.FollowingInfo.TrackingUrn == trackingUrn
+        );
+    }
         
-        [TestMethod]
-        public async Task TestGetPrivacySettings()
-        {
-            const string entityUrn = "urn:li:fs_privacySettings:ACoAAB7QFDgBHfmbpPTfwu1_RXh-88lhOTDvbyI";
+    [TestMethod]
+    public async Task TestGetPrivacySettings()
+    {
+        const string entityUrn = "urn:li:fs_privacySettings:ACoAAB7QFDgBHfmbpPTfwu1_RXh-88lhOTDvbyI";
 
-            using var hitman = new Hitman(_session);
-            var willianGatesPrivacySettings = await hitman.GetPrivacySettingsFromHandleAsync("williamhgates");
+        using var hitman = new Hitman(_session);
+        var willianGatesPrivacySettings = await hitman.GetPrivacySettingsFromHandleAsync("williamhgates");
 
-            Assert.IsTrue(
-                willianGatesPrivacySettings.AllowOpenProfile &&
-                willianGatesPrivacySettings.ShowPublicProfile &&
-                willianGatesPrivacySettings.ShowPremiumSubscriberBadge &&
-                willianGatesPrivacySettings.EntityUrn == entityUrn
-            );
-        }
+        Assert.IsTrue(
+            willianGatesPrivacySettings.AllowOpenProfile &&
+            willianGatesPrivacySettings.ShowPublicProfile &&
+            willianGatesPrivacySettings.ShowPremiumSubscriberBadge &&
+            willianGatesPrivacySettings.EntityUrn == entityUrn
+        );
     }
 }
